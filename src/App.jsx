@@ -1,24 +1,24 @@
 import React, { useState, useEffect }from "react";
 import axios from 'axios'; 
 
-
-const baseURL = "https://valorant-api.com/v1/playercards";
 const App = () => {
-  const [data, setData] = useState(null); 
+  const url = 'https://valorant-api.com/v1/playercards'
+  const [cards, setCards] = useState(null); 
   const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
+  const [dataLength, setDataLength] = useState(0); 
+  const [counter, setCounter] = useState(0); 
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get(
-          `https://valorant-api.com/v1/playercards`
-        );
-        setData(response.data);
+        const response = await axios.get(url);
+        setCards(response.data);
         setError(null);
+        setDataLength(response.data.length);
       } catch (err) {
         setError(err.message);
-        setData(null);
+        setCards(null);
       } finally {
         setLoading(false);
       }
@@ -34,12 +34,17 @@ const [error, setError] = useState(null);
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
-        {data &&
-          data.data.map(({ uuid, largeArt }) => (
-            <li key={uuid}>
-              <img src={largeArt}></img>
-            </li>
-          ))}
+        {cards.data[0] &&
+            <div>
+              <button>Left</button>
+              <div className="middle">
+                <li>
+                  <img src={cards.data[counter].displayIcon} alt="joemama"></img>
+                </li>
+              </div>
+            <button onClick={()=>setCounter(counter+1)}>Right</button>
+            </div>
+          }
       </ul>
     </div>
   );
